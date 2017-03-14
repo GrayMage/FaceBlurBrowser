@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>FaceBlurBrowser</title>
+
+    <style type="text/css">
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            width: 100%;
+        }
+
+        html {
+             overflow: hidden;
+        }
+
+        iframe {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<hr/>
+<script type="text/javascript">
+
+    function updateFrame(e) {
+        var frame = document.getElementById('RenderFrame');
+        var src = 'GetPage?q=' + encodeURIComponent(document.getElementById('AddressBar').value);
+        frame.setAttribute('src', src);
+        e.preventDefault();
+    }
+
+    function checkAddressInput() {
+        var go = document.getElementById('Go');
+        if (document.getElementById('AddressBar').value === '') {
+            go.setAttribute('disabled', 'disabled');
+        } else {
+            go.removeAttribute('disabled');
+        }
+    }
+
+    function getParam(url, name) {
+        name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(url);
+        return decodeURIComponent(name[1]);
+    }
+
+    function updateAddressBar(frame) {
+        if (document.getElementById('AddressBar').value !== '') {
+            document.getElementById('AddressBar').value = getParam(frame.contentWindow.location.href, 'q');
+        }
+    }
+
+</script>
+<form>
+    <input type="url" id="AddressBar" placeholder="Enter web address here" onkeyup="checkAddressInput()" autocomplete="on"/>
+
+    <input type="submit" id="Go" value="Go" onclick="updateFrame(event)"/>
+</form>
+<hr/>
+
+<iframe id="RenderFrame" onload="updateAddressBar(this)"></iframe>
+
+</body>
+</html>

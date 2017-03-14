@@ -1,0 +1,5 @@
+﻿@{
+    var pageProcessor = new WebPageProcessor(Request.Params["q"]);
+}
+
+@Html.Raw(pageProcessor.Process())
