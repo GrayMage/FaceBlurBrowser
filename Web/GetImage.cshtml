@@ -1,0 +1,6 @@
+﻿@{
+    var url = Request.Params["q"];
+    var bytes = new WebClient().DownloadData(url);
+    Response.ContentType = "image/jpeg";
+    Response.OutputStream.Write(bytes, 0, bytes.Length);
+}

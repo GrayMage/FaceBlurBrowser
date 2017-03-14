@@ -45,12 +45,28 @@ public class WebPageProcessor
         }
     }
 
+    private void ProcessImages()
+    {
+        if (!_doc.DocumentNode.HasChildNodes) return;
+
+        foreach (var link in _doc.DocumentNode.SelectNodes("//img[@src]"))
+        {
+            var attribute = link.Attributes["src"];
+
+            var url = attribute.Value;
+
+            attribute.Value = "/GetImage?q=" +
+                              Uri.EscapeUriString(IsAbsoluteUri(url) ? url : new Uri(new Uri(_targetUrl), url).ToString());
+        }
+    }
+
     public string Process()
     {
         if (_doc == null)
             return "<h2>No such site...</h2>";
 
         ProcessLinks();
+        ProcessImages();
 
         var sb = new StringBuilder();
         var sw = new StringWriter(sb);
