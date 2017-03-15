@@ -43,10 +43,10 @@ public class WebPageProcessor
 
             var url = attribute.Value;
 
-            attribute.Value =
-                string.Format(
-                    "/{0}?q=" + Uri.EscapeUriString(IsAbsoluteUri(url) ? url : new Uri(new Uri(_targetUrl), url).ToString()),
-                    handler);
+            var updatedUrl = Uri.EscapeUriString(IsAbsoluteUri(url) ? url : new Uri(new Uri(_targetUrl), url).ToString());
+            if (updatedUrl.StartsWith("//")) updatedUrl = "http:" + updatedUrl;
+
+            attribute.Value = string.Format("/{0}?q={1}", handler, updatedUrl);
         }
     }
 
