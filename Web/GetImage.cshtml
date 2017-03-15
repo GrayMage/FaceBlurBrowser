@@ -1,6 +1,8 @@
 ﻿@{
     var url = Request.Params["q"];
     var bytes = new WebClient().DownloadData(url);
+    var imageProcessor = new ImageProcessor(bytes);
     Response.ContentType = "image/jpeg";
-    Response.OutputStream.Write(bytes, 0, bytes.Length);
+    var processed = imageProcessor.Process();
+    Response.OutputStream.Write(processed, 0, processed.Length);
 }
