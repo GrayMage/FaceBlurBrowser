@@ -17,6 +17,7 @@ public class WebPageProcessor
         try
         {
             _doc = web.Load(_targetUrl);
+            _targetUrl = web.ResponseUri.ToString();
         }
         catch (Exception)
         {
