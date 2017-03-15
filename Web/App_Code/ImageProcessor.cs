@@ -15,8 +15,8 @@ public class ImageProcessor
 
     public byte[] Process()
     {
-        var fromImage = Graphics.FromImage(_image);
         var bitmap = new Bitmap(_image);
+        var fromImage = Graphics.FromImage(bitmap);
         var image = new Image<Bgr, byte>(bitmap);
         foreach (var faceRect in new FaceDetector(bitmap).GetFaceRects())
         {
@@ -26,7 +26,7 @@ public class ImageProcessor
         }
 
         var ms = new MemoryStream();
-        _image.Save(ms, ImageFormat.Jpeg);
+        bitmap.Save(ms, ImageFormat.Jpeg);
         return ms.ToArray();
     }
 }
