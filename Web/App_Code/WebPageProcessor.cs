@@ -34,7 +34,10 @@ public class WebPageProcessor
     {
         if (!_doc.DocumentNode.HasChildNodes) return;
 
-        foreach (var link in _doc.DocumentNode.SelectNodes(string.Format("//{0}[@{1}]", tag, attributeName)))
+        var htmlNodes = _doc.DocumentNode.SelectNodes(string.Format("//{0}[@{1}]", tag, attributeName));
+        if (htmlNodes == null) return;
+
+        foreach (var link in htmlNodes)
         {
             var attribute = link.Attributes[attributeName];
 
