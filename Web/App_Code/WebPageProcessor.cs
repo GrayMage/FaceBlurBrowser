@@ -30,33 +30,20 @@ public class WebPageProcessor
         return Uri.TryCreate(uri, UriKind.Absolute, out result);
     }
 
-    private void ProcessLinks()
+    private void ProcessNodes(string tag, string attributeName, string handler)
     {
         if (!_doc.DocumentNode.HasChildNodes) return;
 
-        foreach (var link in _doc.DocumentNode.SelectNodes("//a[@href]"))
+        foreach (var link in _doc.DocumentNode.SelectNodes(string.Format("//{0}[@{1}]", tag, attributeName)))
         {
-            var attribute = link.Attributes["href"];
+            var attribute = link.Attributes[attributeName];
 
             var url = attribute.Value;
 
-            attribute.Value = "/GetPage?q=" +
-                              Uri.EscapeUriString(IsAbsoluteUri(url) ? url : new Uri(new Uri(_targetUrl), url).ToString());
-        }
-    }
-
-    private void ProcessImages()
-    {
-        if (!_doc.DocumentNode.HasChildNodes) return;
-
-        foreach (var link in _doc.DocumentNode.SelectNodes("//img[@src]"))
-        {
-            var attribute = link.Attributes["src"];
-
-            var url = attribute.Value;
-
-            attribute.Value = "/GetImage?q=" +
-                              Uri.EscapeUriString(IsAbsoluteUri(url) ? url : new Uri(new Uri(_targetUrl), url).ToString());
+            attribute.Value =
+                string.Format(
+                    "/{0}?q=" + Uri.EscapeUriString(IsAbsoluteUri(url) ? url : new Uri(new Uri(_targetUrl), url).ToString()),
+                    handler);
         }
     }
 
@@ -65,8 +52,8 @@ public class WebPageProcessor
         if (_doc == null)
             return "<h2>No such site...</h2>";
 
-        ProcessLinks();
-        ProcessImages();
+        ProcessNodes("a", "href", "GetPage");
+        ProcessNodes("img", "src", "GetImage");
 
         var sb = new StringBuilder();
         var sw = new StringWriter(sb);
