@@ -1,6 +1,11 @@
 ﻿@{
-    var url = Request.Params["q"];
-    var bytes = new WebClient().DownloadData(url);
+    var type = Request.Params["type"];
+    var data = Request.Params["q"];
+    byte[] bytes;
+
+    bytes = type == "url" ? new WebClient().DownloadData(data) :
+        Convert.FromBase64String(data.Split(',')[1]);
+
     var imageProcessor = new ImageProcessor(bytes);
     Response.ContentType = "image/jpeg";
     var processed = imageProcessor.Process();
