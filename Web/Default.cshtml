@@ -2,67 +2,99 @@
 <html>
 <head>
     <title>FaceBlurBrowser</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <style type="text/css">
-        body {
-            height: 100%;
+        * {
             margin: 0;
-            padding: 0;
-            position: absolute;
+            padding: 0
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
             width: 100%;
         }
 
-        html {
-             overflow: hidden;
+        table {
+            border-collapse: collapse;
+            height: 100%;
+            table-layout: static;
+            width: 100%;
         }
 
         iframe {
             height: 100%;
-            width: 100%;
+            width: 100%
         }
+
+        .header { border-bottom: 1px solid #000 }
+
+        .content { height: 100% }
     </style>
 
 </head>
 <body>
-<hr/>
 <script type="text/javascript">
 
     function updateFrame(e) {
-        var frame = document.getElementById('RenderFrame');
-        var src = 'GetPage?q=' + encodeURIComponent(document.getElementById('AddressBar').value);
-        frame.setAttribute('src', src);
+        var frame = document.getElementById("RenderFrame");
+        var addr = document.getElementById("AddressBar").value;
+        if (!(new RegExp("^https?://").test(addr))) {
+            addr = "http://" + addr;
+        }
+        var src = "GetPage?q=" + encodeURIComponent(addr);
+        frame.setAttribute("src", src);
         e.preventDefault();
     }
 
     function checkAddressInput() {
-        var go = document.getElementById('Go');
-        if (document.getElementById('AddressBar').value === '') {
-            go.setAttribute('disabled', 'disabled');
+        var go = document.getElementById("Go");
+        if (document.getElementById("AddressBar").value === "") {
+            go.setAttribute("disabled", "disabled");
         } else {
-            go.removeAttribute('disabled');
+            go.removeAttribute("disabled");
         }
     }
 
     function getParam(url, name) {
-        name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(url);
+        name = (new RegExp("[?&]" + encodeURIComponent(name) + "=([^&]*)")).exec(url);
         return decodeURIComponent(name[1]);
     }
 
     function updateAddressBar(frame) {
-        if (document.getElementById('AddressBar').value !== '') {
-            document.getElementById('AddressBar').value = getParam(frame.contentWindow.location.href, 'q');
+        if (document.getElementById("AddressBar").value !== "") {
+            document.getElementById("AddressBar").value = getParam(frame.contentWindow.location.href, "q");
         }
     }
-
 </script>
-<form>
-    <input type="url" id="AddressBar" placeholder="Enter web address here" onkeyup="checkAddressInput()" autocomplete="on"/>
 
-    <input type="submit" id="Go" value="Go" onclick="updateFrame(event)"/>
-</form>
-<hr/>
-
-<iframe id="RenderFrame" onload="updateAddressBar(this)"></iframe>
-
+<table>
+    <tr>
+        <td class="header">
+            <div>
+                <form class="well well-lg" style="margin: 10px;">
+                    <div class="row">
+                        <div class="input-group">
+                            <input type="url" class="form-control" id="AddressBar" placeholder="Enter web address here" onkeyup="checkAddressInput()">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default" id="Go" onclick="updateFrame(event)" disabled="disabled">Go!</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div><!-- /.row -->
+                </form>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="content">
+            <iframe id="RenderFrame" onload="updateAddressBar(this)"></iframe>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
