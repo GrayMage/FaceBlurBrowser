@@ -20,6 +20,6 @@ public class FaceDetector
 
     public IEnumerable<Rectangle> GetFaceRects()
     {
-        return _cascadeClassifier.DetectMultiScale(_image, 1.1, 10, Size.Empty);
+        return _cascadeClassifier.DetectMultiScale(_image, 1.1, 5);
     }
 }
